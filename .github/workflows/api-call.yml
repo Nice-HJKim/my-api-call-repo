@@ -1,5 +1,6 @@
 name: API Call Demo
-on: workflow_dispatch
+on:
+  workflow_dispatch:
 
 jobs:
   call-api:
@@ -9,7 +10,8 @@ jobs:
 
     steps:
       - name: Print Actor
-        run: echo "실행자: $GITHUB_ACTOR"
+        run: |
+          echo "실행자: $GITHUB_ACTOR"
 
       - name: Call GitHub API
         run: |
