@@ -1,32 +1,23 @@
-name: API Call Demo (Env Scope Test)
+name: API Call Demo
 on:
   workflow_dispatch:
 
 jobs:
   call-api:
     runs-on: ubuntu-latest
-
-    #  Job 전체에 적용되는 환경변수 (기본값)
     env:
-      TOKEN: "JOB_LEVEL_TOKEN_ABC"
+      TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - name: Print Actor
         run: |
           echo "실행자: $GITHUB_ACTOR"
 
-      - name: Show Job-level TOKEN
+      - name: Call GitHub API
         run: |
-          echo "Job-level TOKEN 값은: $TOKEN"
-
-      #  이 스텝에서만 TOKEN을 재정의(override)
-      - name: Call GitHub API (Step-level TOKEN 재정의)
-        env:
-          TOKEN: "STEP_LEVEL_TOKEN_XYZ"
-        run: |
-          echo "이 Step에서 TOKEN 값은: $TOKEN"
           BASE_URL="https://api.github.com/repos/${{ github.repository }}"
           echo "요청 URL: $BASE_URL"
-          # 데모 목적: 토큰은 헤더에 넣지 않고 호출(공개 리포는 무인증으로도 조회 가능)
-          curl -H "Accept: application/vnd.github+json" "$BASE_URL" || true
+          curl -H "Authorization: Bearer $TOKEN" \
+               -H "Accept: application/vnd.github+json" \
+               "$BASE_URL"
 
